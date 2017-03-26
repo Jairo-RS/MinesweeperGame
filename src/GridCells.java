@@ -3,6 +3,7 @@ public class GridCells { //This class stores the information of each cell
 
 	private int xPos;
 	private int yPos;
+	public int neighboringBombs = 0;
 	private boolean Visible = false;
 	private boolean Bomb;
 	
@@ -39,5 +40,13 @@ public class GridCells { //This class stores the information of each cell
 	
 	public void setBomb(boolean value) {
 		this.Bomb = value;
+	}
+	
+	public int getNeighboringBombs() {
+		return this.neighboringBombs;
+	}
+	
+	public void bumpBombs() {
+		this.neighboringBombs += 1;
 	}
 }

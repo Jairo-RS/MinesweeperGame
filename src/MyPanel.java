@@ -170,4 +170,31 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
+	public void generateNumbers()
+	{
+		for (int x = 0; x < TOTAL_COLUMNS; x++)
+		{
+			for (int y = 0; y < TOTAL_ROWS; y++)
+			{
+				if(Cells[x][y].isBomb())
+				{
+					if (x!=0)
+					{
+						if(y!=8){Cells[x - 1][y + 1].bumpBombs();}
+						if(y!=0){Cells[x - 1][y - 1].bumpBombs();}
+						Cells[x - 1][y].bumpBombs();
+					}
+					if(x!=8)
+					{
+						if(y!=8){Cells[x + 1][y + 1].bumpBombs();}
+						if(y!=0){Cells[x + 1][y - 1].bumpBombs();}
+						Cells[x + 1][y].bumpBombs();
+					}
+					if(y!=8){Cells[x][y + 1].bumpBombs();}
+					if(y!=0){Cells[x][y - 1].bumpBombs();}
+				}
+			}
+		}
+	}
+	
 }
