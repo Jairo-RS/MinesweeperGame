@@ -23,8 +23,7 @@ public class MyPanel extends JPanel {
 	public Color[][] colorCoveredSquare = new Color[TOTAL_COLUMNS][TOTAL_ROWS+1]; 
 	public Color[][] colorUncoveredSquare = new Color[TOTAL_COLUMNS][TOTAL_ROWS];  //este array determina si la celda es una mina o no lo es
 	
-//	public int[][] adjacentBombs= new int[TOTAL_COLUMNS + 1][TOTAL_ROWS + 1];
-	
+	public GridCells[][] Cells = new GridCells[TOTAL_COLUMNS][TOTAL_ROWS];
 	
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
@@ -45,6 +44,7 @@ public class MyPanel extends JPanel {
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //The rest of the grid
 			for (int y = 0; y < TOTAL_ROWS; y++) {
 				colorCoveredSquare[x][y] = Color.WHITE;
+				Cells[x][y] = new GridCells(x, y);  //Calls GridCells class to get information
 			}
 		}
 	}
@@ -136,6 +136,38 @@ public class MyPanel extends JPanel {
 			return -1;
 		}
 		return y;
+	}
+	
+	public void generateBombs()
+	{
+		Random randX = new Random();
+		Random randY = new Random();
+		int generatedBombs = 0;
+		while (generatedBombs < bombCount)
+		{
+			int x = randX.nextInt(9);
+			int y = randY.nextInt(9);
+			if (!Cells[x][y].isBomb())
+			{
+				Cells[x][y].setBomb(true);
+				generatedBombs++;
+			}
+		}
+	}
+	
+	public void revealTheBombs()
+	{
+		for (int x = 0; x < TOTAL_COLUMNS; x++)
+		{
+			for (int y = 0; y < TOTAL_ROWS; y++) 
+			{
+				if(Cells[x][y].isBomb())
+				{
+					Cells[x][y].setVisible(true);
+					colorCoveredSquare[x][y] = Color.BLACK;
+				}
+			}
+		}
 	}
 	
 }
