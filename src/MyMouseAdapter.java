@@ -3,12 +3,10 @@ import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-//import java.util.Random;
 
 import javax.swing.JFrame;
 
 public class MyMouseAdapter extends MouseAdapter {
-//	private Random generator = new Random();
 	public void mousePressed(MouseEvent e) {
 		switch (e.getButton()) {
 		case 1:		//Left mouse button
@@ -98,8 +96,12 @@ public class MyMouseAdapter extends MouseAdapter {
 						//Released the mouse button on the same cell where it was pressed
 						if ((gridX == 0) || (gridY == 0)) {
 							//On the left column and on the top row... do nothing
+						} else {
+						if (myPanel.colorCoveredSquare[myPanel.mouseDownGridX][myPanel.mouseDownGridY].equals(Color.RED)) {
+							//If the square has a flag(RED)
+							//Do nothing
 						}
-						
+					}
 					}
 				}
 			}
