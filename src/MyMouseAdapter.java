@@ -81,6 +81,8 @@ public class MyMouseAdapter extends MouseAdapter {
 			myPanel.y = y;
 			int gridX = myPanel.getGridX(x, y);
 			int gridY = myPanel.getGridY(x, y);
+			
+			Color newColor = null;
 			if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1)) {
 				//Had pressed outside
 				//Do nothing
@@ -101,12 +103,24 @@ public class MyMouseAdapter extends MouseAdapter {
 							//If the square has a flag(RED)
 							//Do nothing
 						}
+						if (!myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].isVisible()) {
+							Color White = Color.WHITE;
+							myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].setVisible(true);
+							
+							do {
+								newColor = Color.GRAY;
+							} 
+							while ((newColor.equals(White)));
+							myPanel.colorCoveredSquare[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
+							myPanel.repaint();
+						}
 					}
 					}
 				}
 			}
 			myPanel.repaint();
 			break;
+			
 		case 3:		//Right mouse button
 			Component d = e.getComponent();
 			while (!(d instanceof JFrame)) {
@@ -128,16 +142,13 @@ public class MyMouseAdapter extends MouseAdapter {
 			int gridX2 = myPanel2.getGridX(x3, y3);
 			int gridY2 = myPanel2.getGridY(x3, y3);
 			
-//			if(gridX2 >= 0 && gridX2 <= 9 && gridY2 >= 0 && gridY2 <= 9) {
-//            		myPanel2.colorCoveredSquare[gridX2][gridY2] = Color.RED;
-//	            	myPanel2.repaint();
-//	            	myPanel2.repaint();
-//        			}
-			if(gridX2 >= 0 && gridX2 <= 9 && gridY2 >= 0 && gridY2 <= 9 && !myPanel2.Cells[gridX2][gridY2].isVisible()) 
-				{   //Checks if square is NOT red
-				if(!myPanel2.colorCoveredSquare[gridX2][gridY2].equals(Color.RED)) {
-					myPanel2.colorCoveredSquare[gridX2][gridY2] = Color.RED;
-					myPanel2.repaint();
+			if(gridX2 >= 0 && gridX2 <= 9 && gridY2 >= 0 && gridY2 <= 9 && !myPanel2.Cells[gridX2][gridY2].isVisible()) {   
+				//Checks if square is NOT red
+				if(!myPanel2.colorCoveredSquare[gridX2][gridY2].equals(Color.RED) && !myPanel2.Cells[gridX2][gridY2].isVisible()) {
+					if (!myPanel2.colorCoveredSquare[myPanel2.mouseDownGridX][myPanel2.mouseDownGridY].equals(Color.GRAY)) {
+						myPanel2.colorCoveredSquare[gridX2][gridY2] = Color.RED;
+						myPanel2.repaint();
+					}
 				}
 				//Toggle RED off
 				else if(myPanel2.colorCoveredSquare[gridX2][gridY2].equals(Color.RED)) {

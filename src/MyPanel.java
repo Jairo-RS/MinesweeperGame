@@ -20,12 +20,13 @@ public class MyPanel extends JPanel {
 	public int mouseDownGridY = 0;
 	
 	public static int bombCount = 10;
+	public int exposedCells;
 
 	public Color[][] colorCoveredSquare = new Color[TOTAL_COLUMNS][TOTAL_ROWS+1]; 
 	public Color[][] colorUncoveredSquare = new Color[TOTAL_COLUMNS][TOTAL_ROWS];  //este array determina si la celda es una mina o no lo es
 	
 	public GridCells[][] Cells = new GridCells[TOTAL_COLUMNS][TOTAL_ROWS];
-	public boolean revealTheNumbers = false;
+	public boolean revealAllTheNumbers = false;
 	
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
@@ -83,9 +84,39 @@ public class MyPanel extends JPanel {
 		Font arial = new Font("Arial", Font.BOLD, 20);
 		g.setFont(arial);
 		
-		if (revealTheNumbers)
+		for (int x = 0; x < TOTAL_COLUMNS; x++)
 		{
-			revealTheNumbers(g);
+			for (int y = 0; y < TOTAL_ROWS - 1; y++)
+			{
+				if(Cells[x][y].isVisible() && Cells[x][y].getNeighboringBombs() > 0)
+				{
+					revealNumbers(g, x, y);
+					repaint();
+				}
+				
+				else if(Cells[x][y].isVisible() && Cells[x][y].getNeighboringBombs() <= 0 && !Cells[x][y].isBomb())
+				{
+					if (x!=0)
+					{
+						if(y!=8){Cells[x - 1][y + 1].setVisible(true); colorCoveredSquare[x - 1][y + 1] = Color.GRAY;}
+						if(y!=0){Cells[x - 1][y - 1].setVisible(true); colorCoveredSquare[x - 1][y - 1] = Color.GRAY;}
+						Cells[x - 1][y].setVisible(true); colorCoveredSquare[x - 1][y] = Color.GRAY;
+					}
+					if(x!=8)
+					{
+						if(y!=8){Cells[x + 1][y + 1].setVisible(true); colorCoveredSquare[x + 1][y + 1] = Color.GRAY;}
+						if(y!=0){Cells[x + 1][y - 1].setVisible(true); colorCoveredSquare[x + 1][y - 1] = Color.GRAY;}
+						Cells[x + 1][y].setVisible(true); colorCoveredSquare[x + 1][y] = Color.GRAY;
+					}
+					if(y!=8){Cells[x][y + 1].setVisible(true); colorCoveredSquare[x][y + 1] = Color.GRAY;}
+					if(y!=0){Cells[x][y - 1].setVisible(true); colorCoveredSquare[x][y - 1] = Color.GRAY;}
+				}
+			}
+		}
+		
+		if (revealAllTheNumbers)
+		{
+			revealAllTheNumbers(g);
 		}
 		
 		for (int x = 0; x < TOTAL_COLUMNS; x++)
@@ -96,6 +127,15 @@ public class MyPanel extends JPanel {
 				{
 					g.setColor(Cells[x][y].getColorOfNumber());
 					g.drawString(Integer.toString(Cells[x][y].getNeighboringBombs()), GRID_X + x*(INNER_CELL_SIZE+1) + 10, GRID_Y + y*(INNER_CELL_SIZE+1) + 20);
+				}
+			}
+		}
+		
+		exposedCells = 0;
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS - 1; y++) {
+				if(Cells[x][y].isVisible() && !Cells[x][y].isBomb()) {
+					exposedCells +=1;
 				}
 			}
 		}
@@ -210,7 +250,7 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
-	public void revealTheNumbers(Graphics g)
+	public void revealAllTheNumbers(Graphics g)
 	{
 		for (int x = 0; x < TOTAL_COLUMNS; x++)
 		{
