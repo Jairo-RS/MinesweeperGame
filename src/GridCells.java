@@ -1,9 +1,10 @@
+import java.awt.Color;
 
 public class GridCells { //This class stores the information of each cell
 
 	private int xPos;
 	private int yPos;
-	public int neighboringBombs = 0;
+	private int neighboringBombs = 0;
 	private boolean Visible = false;
 	private boolean Bomb;
 	
@@ -48,5 +49,22 @@ public class GridCells { //This class stores the information of each cell
 	
 	public void bumpBombs() {
 		this.neighboringBombs += 1;
+	}
+	
+	public Color getColorOfNumber()
+	{
+		Color color = Color.WHITE;
+		switch(this.getNeighboringBombs())
+		{
+			case 1: color = Color.BLUE; break;
+			case 2: color = Color.GREEN; break;
+			case 3: color = Color.ORANGE; break;
+			case 4: color = Color.RED; break;
+			case 5: color = Color.CYAN; break;
+			case 6: color = Color.YELLOW; break;
+			case 7: color = Color.PINK; break;
+			case 8: color = Color.MAGENTA; break;
+		}
+		return color;
 	}
 }

@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
+import java.awt.Font;
 
 import javax.swing.JPanel;
 
@@ -24,6 +25,7 @@ public class MyPanel extends JPanel {
 	public Color[][] colorUncoveredSquare = new Color[TOTAL_COLUMNS][TOTAL_ROWS];  //este array determina si la celda es una mina o no lo es
 	
 	public GridCells[][] Cells = new GridCells[TOTAL_COLUMNS][TOTAL_ROWS];
+	public boolean revealTheNumbers = false;
 	
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
@@ -35,12 +37,6 @@ public class MyPanel extends JPanel {
 		if (TOTAL_ROWS + (new Random()).nextInt(1) < 3) {	//Use of "random" to prevent unwanted Eclipse warning
 			throw new RuntimeException("TOTAL_ROWS must be at least 3!");
 		}
-//		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //Top row
-//			colorArray[x][0] = Color.LIGHT_GRAY;
-//		}
-//		for (int y = 0; y < TOTAL_ROWS; y++) {   //Left column
-//			colorArray[0][y] = Color.LIGHT_GRAY;
-//		}
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //The rest of the grid
 			for (int y = 0; y < TOTAL_ROWS; y++) {
 				colorCoveredSquare[x][y] = Color.WHITE;
@@ -73,9 +69,6 @@ public class MyPanel extends JPanel {
 			g.drawLine(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS - 1)));
 		}
 
-//		//Draw an additional cell at the bottom left
-//		g.drawRect(x1 + GRID_X, y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS - 1)), INNER_CELL_SIZE + 1, INNER_CELL_SIZE + 1);
-
 		//Paint cell(square) colors
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {
 			for (int y = 0; y < TOTAL_ROWS - 1; y++) {
@@ -83,6 +76,26 @@ public class MyPanel extends JPanel {
 					Color c = colorCoveredSquare[x][y];
 					g.setColor(c);
 					g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
+				}
+			}
+		}
+		
+		Font arial = new Font("Arial", Font.BOLD, 20);
+		g.setFont(arial);
+		
+		if (revealTheNumbers)
+		{
+			revealTheNumbers(g);
+		}
+		
+		for (int x = 0; x < TOTAL_COLUMNS; x++)
+		{
+			for (int y = 0; y < TOTAL_ROWS - 1; y++)
+			{
+				if(Cells[x][y].isVisible() && !Cells[x][y].isBomb() && Cells[x][y].getNeighboringBombs() > 0)
+				{
+					g.setColor(Cells[x][y].getColorOfNumber());
+					g.drawString(Integer.toString(Cells[x][y].getNeighboringBombs()), GRID_X + x*(INNER_CELL_SIZE+1) + 10, GRID_Y + y*(INNER_CELL_SIZE+1) + 20);
 				}
 			}
 		}
@@ -195,6 +208,28 @@ public class MyPanel extends JPanel {
 				}
 			}
 		}
+	}
+	
+	public void revealTheNumbers(Graphics g)
+	{
+		for (int x = 0; x < TOTAL_COLUMNS; x++)
+		{
+			for (int y = 0; y < TOTAL_ROWS; y++) 
+			{
+				if(!Cells[x][y].isBomb() && Cells[x][y].getNeighboringBombs() > 0)
+				{
+					g.setColor(Cells[x][y].getColorOfNumber());
+					g.drawString(Integer.toString(Cells[x][y].getNeighboringBombs()), GRID_X + x*(INNER_CELL_SIZE+1) + 10, GRID_Y + y*(INNER_CELL_SIZE+1) + 20);
+				}
+			}
+		}
+	}
+	
+	public void revealNumbers(Graphics g, int xPos, int yPos)
+	{
+		g.setColor(Cells[xPos][yPos].getColorOfNumber());
+		g.drawString(Integer.toString(Cells[xPos][yPos].getNeighboringBombs()), GRID_X + x*(INNER_CELL_SIZE+1) + 10, GRID_Y + y*(INNER_CELL_SIZE+1) + 20);
+		return;
 	}
 	
 }
