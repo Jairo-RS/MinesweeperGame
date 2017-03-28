@@ -20,13 +20,16 @@ public class MyPanel extends JPanel {
 	public int mouseDownGridY = 0;
 	
 	public static int bombCount = 10;
-	public int exposedCells;
+	public int squareCountAvailable = (TOTAL_COLUMNS-1)*(TOTAL_COLUMNS-1) - bombCount;
 
 	public Color[][] colorCoveredSquare = new Color[TOTAL_COLUMNS][TOTAL_ROWS+1]; 
 	public Color[][] colorUncoveredSquare = new Color[TOTAL_COLUMNS][TOTAL_ROWS];  //este array determina si la celda es una mina o no lo es
 	
 	public GridCells[][] Cells = new GridCells[TOTAL_COLUMNS][TOTAL_ROWS];
 	public boolean revealAllTheNumbers = false;
+	public boolean gameOver = false;
+	public boolean won = false;
+	public int exposedCells;
 	
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
@@ -84,6 +87,20 @@ public class MyPanel extends JPanel {
 		Font arial = new Font("Arial", Font.BOLD, 20);
 		g.setFont(arial);
 		
+		if(exposedCells == (81 - bombCount))
+		{
+			win(g);
+			repaint();
+		}
+		
+		if(gameOver == true)
+		{
+//			revealAllNumbers = true;
+			revealTheBombs();
+			lost(g);
+			repaint();
+		}
+		
 		for (int x = 0; x < TOTAL_COLUMNS; x++)
 		{
 			for (int y = 0; y < TOTAL_ROWS - 1; y++)
@@ -135,7 +152,7 @@ public class MyPanel extends JPanel {
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {
 			for (int y = 0; y < TOTAL_ROWS - 1; y++) {
 				if(Cells[x][y].isVisible() && !Cells[x][y].isBomb()) {
-					exposedCells +=1;
+					exposedCells += 1;
 				}
 			}
 		}
@@ -191,8 +208,34 @@ public class MyPanel extends JPanel {
 		return y;
 	}
 	
-	public void generateBombs()
-	{
+	public void generateNumbers() {
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS; y++) {
+				if(Cells[x][y].isBomb()) {
+					if (x!=0) {
+						if(y!=8){Cells[x - 1][y + 1].bumpBombs();
+						}
+						if(y!=0){Cells[x - 1][y - 1].bumpBombs();
+						}
+						Cells[x - 1][y].bumpBombs();
+					}
+					if(x!=8) {
+						if(y!=8){Cells[x + 1][y + 1].bumpBombs();
+						}
+						if(y!=0){Cells[x + 1][y - 1].bumpBombs();
+						}
+						Cells[x + 1][y].bumpBombs();
+					}
+					if(y!=8){Cells[x][y + 1].bumpBombs();
+					}
+					if(y!=0){Cells[x][y - 1].bumpBombs();
+					}
+				}
+			}
+		}
+	}
+	
+	public void generateBombs() {
 		Random randX = new Random();
 		Random randY = new Random();
 		int generatedBombs = 0;
@@ -208,14 +251,10 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
-	public void revealTheBombs()
-	{
-		for (int x = 0; x < TOTAL_COLUMNS; x++)
-		{
-			for (int y = 0; y < TOTAL_ROWS; y++) 
-			{
-				if(Cells[x][y].isBomb())
-				{
+	public void revealTheBombs() {
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS; y++)  {
+				if(Cells[x][y].isBomb()){
 					Cells[x][y].setVisible(true);
 					colorCoveredSquare[x][y] = Color.BLACK;
 				}
@@ -223,41 +262,10 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
-	public void generateNumbers()
-	{
-		for (int x = 0; x < TOTAL_COLUMNS; x++)
-		{
-			for (int y = 0; y < TOTAL_ROWS; y++)
-			{
-				if(Cells[x][y].isBomb())
-				{
-					if (x!=0)
-					{
-						if(y!=8){Cells[x - 1][y + 1].bumpBombs();}
-						if(y!=0){Cells[x - 1][y - 1].bumpBombs();}
-						Cells[x - 1][y].bumpBombs();
-					}
-					if(x!=8)
-					{
-						if(y!=8){Cells[x + 1][y + 1].bumpBombs();}
-						if(y!=0){Cells[x + 1][y - 1].bumpBombs();}
-						Cells[x + 1][y].bumpBombs();
-					}
-					if(y!=8){Cells[x][y + 1].bumpBombs();}
-					if(y!=0){Cells[x][y - 1].bumpBombs();}
-				}
-			}
-		}
-	}
-	
-	public void revealAllTheNumbers(Graphics g)
-	{
-		for (int x = 0; x < TOTAL_COLUMNS; x++)
-		{
-			for (int y = 0; y < TOTAL_ROWS; y++) 
-			{
-				if(!Cells[x][y].isBomb() && Cells[x][y].getNeighboringBombs() > 0)
-				{
+	public void revealAllTheNumbers(Graphics g) {
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS; y++)  {
+				if(!Cells[x][y].isBomb() && Cells[x][y].getNeighboringBombs() > 0) {
 					g.setColor(Cells[x][y].getColorOfNumber());
 					g.drawString(Integer.toString(Cells[x][y].getNeighboringBombs()), GRID_X + x*(INNER_CELL_SIZE+1) + 10, GRID_Y + y*(INNER_CELL_SIZE+1) + 20);
 				}
@@ -265,11 +273,20 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
-	public void revealNumbers(Graphics g, int xPos, int yPos)
-	{
+	public void revealNumbers(Graphics g, int xPos, int yPos) {
 		g.setColor(Cells[xPos][yPos].getColorOfNumber());
 		g.drawString(Integer.toString(Cells[xPos][yPos].getNeighboringBombs()), GRID_X + x*(INNER_CELL_SIZE+1) + 10, GRID_Y + y*(INNER_CELL_SIZE+1) + 20);
 		return;
 	}
 	
+	public void lost(Graphics g) {
+		g.setColor(Color.RED);
+		g.drawString("GAME OVER!", GRID_X + INNER_CELL_SIZE+1 + ((INNER_CELL_SIZE+1)*TOTAL_COLUMNS-100)/2, GRID_Y + ((INNER_CELL_SIZE+1)*TOTAL_COLUMNS) + INNER_CELL_SIZE);
+	}
+	
+	public void win(Graphics g) {
+			g.setColor(Color.GREEN);
+			g.drawString("YOU WIN!", GRID_X + INNER_CELL_SIZE+1 + ((INNER_CELL_SIZE+1)*TOTAL_COLUMNS-100)/2, GRID_Y + ((INNER_CELL_SIZE+1)*TOTAL_COLUMNS) + INNER_CELL_SIZE);
+			repaint();
+	}
 }

@@ -12,7 +12,7 @@ public class Main {
 		myPanel.generateBombs();
 		myPanel.generateNumbers();
 		myPanel.revealTheBombs(); //Method to show that bombs(mines) are working
-		//myPanel.revealTheNumbers = true; //Method to test that numbers are displayed
+		//myPanel.revealAllTheNumbers = true; //Method to test that numbers are displayed
 
 		MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
 		myFrame.addMouseListener(myMouseAdapter);
