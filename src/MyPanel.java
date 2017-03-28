@@ -87,26 +87,21 @@ public class MyPanel extends JPanel {
 		Font arial = new Font("Arial", Font.BOLD, 20);
 		g.setFont(arial);
 		
-		if(exposedCells == (81 - bombCount))
-		{
+		if(exposedCells == (81 - bombCount)) {
 			win(g);
 			repaint();
 		}
 		
-		if(gameOver == true)
-		{
-//			revealAllNumbers = true;
+		if(gameOver == true) {
+//			revealAllTheNumbers = true; //Displays all the numbers around bombs if you lose
 			revealTheBombs();
 			lost(g);
 			repaint();
 		}
 		
-		for (int x = 0; x < TOTAL_COLUMNS; x++)
-		{
-			for (int y = 0; y < TOTAL_ROWS - 1; y++)
-			{
-				if(Cells[x][y].isVisible() && Cells[x][y].getNeighboringBombs() > 0)
-				{
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS - 1; y++) {
+				if(Cells[x][y].isVisible() && Cells[x][y].getNeighboringBombs() > 0) {
 					revealNumbers(g, x, y);
 					repaint();
 				}
@@ -131,15 +126,12 @@ public class MyPanel extends JPanel {
 			}
 		}
 		
-		if (revealAllTheNumbers)
-		{
+		if (revealAllTheNumbers) {
 			revealAllTheNumbers(g);
 		}
 		
-		for (int x = 0; x < TOTAL_COLUMNS; x++)
-		{
-			for (int y = 0; y < TOTAL_ROWS - 1; y++)
-			{
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS - 1; y++) {
 				if(Cells[x][y].isVisible() && !Cells[x][y].isBomb() && Cells[x][y].getNeighboringBombs() > 0)
 				{
 					g.setColor(Cells[x][y].getColorOfNumber());
@@ -264,7 +256,7 @@ public class MyPanel extends JPanel {
 	
 	public void revealAllTheNumbers(Graphics g) {
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {
-			for (int y = 0; y < TOTAL_ROWS; y++)  {
+			for (int y = 0; y < TOTAL_ROWS; y++) {
 				if(!Cells[x][y].isBomb() && Cells[x][y].getNeighboringBombs() > 0) {
 					g.setColor(Cells[x][y].getColorOfNumber());
 					g.drawString(Integer.toString(Cells[x][y].getNeighboringBombs()), GRID_X + x*(INNER_CELL_SIZE+1) + 10, GRID_Y + y*(INNER_CELL_SIZE+1) + 20);

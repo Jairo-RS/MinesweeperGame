@@ -96,38 +96,37 @@ public class MyMouseAdapter extends MouseAdapter {
 					//Is releasing outside
 					//Do nothing
 				} else {
-				if (myPanel.colorCoveredSquare[myPanel.mouseDownGridX][myPanel.mouseDownGridY].equals(Color.RED)) {
+					if (myPanel.colorCoveredSquare[myPanel.mouseDownGridX][myPanel.mouseDownGridY].equals(Color.RED)) {
 					//If the square has a flag(RED)
 					//Do nothing 
-					}
-				else {
-					if(myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].isBomb()) {
-						gameOver = true;
-						myPanel.gameOver = true;
-						myPanel.repaint();
-					}
-					if(myPanel.won) {
+					} else {
+						if(myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].isBomb()) {
+							gameOver = true;
+							myPanel.gameOver = true;
+							myPanel.repaint();
+						}
+						if(myPanel.won) {
 						win = true;
-					}
-					if ((myPanel.mouseDownGridX != gridX) || (myPanel.mouseDownGridY != gridY)) {
-						//Released the mouse button on a different cell where it was pressed
-						//Do nothing
-						return;
-					}
-					if (!myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].isVisible()) {
-						Color White = Color.WHITE;
-						myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].setVisible(true);
+						}
+						if ((myPanel.mouseDownGridX != gridX) || (myPanel.mouseDownGridY != gridY)) {
+							//Released the mouse button on a different cell where it was pressed
+							//Do nothing
+							return;
+						}
+						if (!myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].isVisible()) {
+							Color White = Color.WHITE;
+							myPanel.Cells[myPanel.mouseDownGridX][myPanel.mouseDownGridY].setVisible(true);
 							
-						do {
-							newColor = Color.GRAY;
-						} 
-						while ((newColor.equals(White)));
-						myPanel.colorCoveredSquare[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
-						myPanel.repaint();
+							do {
+								newColor = Color.GRAY;
+							} 
+							while ((newColor.equals(White)));
+							myPanel.colorCoveredSquare[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
+							myPanel.repaint();
+							}
 						}
 					}
 				}
-			}
 			myPanel.repaint();
 			break;
 			
@@ -164,7 +163,7 @@ public class MyMouseAdapter extends MouseAdapter {
 				else if(myPanel2.colorCoveredSquare[gridX2][gridY2].equals(Color.RED)) {
 					myPanel2.colorCoveredSquare[gridX2][gridY2] = Color.WHITE;
 					myPanel2.repaint();
-					}
+				}
 			}
 			break;
 		default:    //Some other button (2 = Middle mouse button, etc.)
